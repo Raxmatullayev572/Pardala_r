@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parda Buyurtma</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+}
+.container{
+    max-width:400px;
+    margin:50px auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+h2{
+    text-align:center;
+}
+input, select{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:5px;
+    border:1px solid #ccc;
+}
+button{
+    width:100%;
+    padding:12px;
+    background:black;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+button:hover{
+    opacity:0.9;
+}
+.success{
+    text-align:center;
+    color:green;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Buyurtma qoldiring</h2>
+
+<form id="orderForm">
+
+<input type="text" placeholder="Qaysi tumandansiz?" required>
+
+<select required>
+<option value="">Dom yoki uchastka?</option>
+<option>Dom</option>
+<option>Uchastka</option>
+</select>
+
+<input type="number" placeholder="Nechta oynaga parda?" required>
+
+<input type="text" placeholder="Budjet (so'm)" required>
+
+<input type="text" placeholder="Ismingiz?" required>
+
+<input type="text" placeholder="Telefon raqamingiz?" required>
+
+<button type="submit">Buyurtma yuborish</button>
+
+</form>
+
+<div id="responseMessage"></div>
+
+</div>
+
+<script>
+document.getElementById("orderForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const token = "8490182357:AAEGr_Zw6lSTb7YV2V7KuFG3f30VZPvcreE";
+    const chat_id = "8242226365";
+
+    const inputs = document.querySelectorAll("#orderForm input");
+    const select = document.querySelector("#orderForm select");
+
+    const message = `
+🛒 Yangi parda buyurtma!
+
+📍 Tuman: ${inputs[0].value}
+🏠 Joy: ${select.value}
+🪟 Oyna soni: ${inputs[1].value}
+💰 Budjet: ${inputs[2].value}
+👤 Ism: ${inputs[3].value}
+📞 Telefon: ${inputs[4].value}
+`;
+
+    fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            chat_id: chat_id,
+            text: message
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.ok){
+            document.getElementById("orderForm").reset();
+            document.getElementById("responseMessage").innerHTML =
+            "<p class='success'>✅ Buyurtmangiz qabul qilindi! Tez orada siz bilan bog‘lanamiz.</p>";
+        } else {
+            alert("Xatolik yuz berdi!");
+        }
+    })
+    .catch(error => alert("Internet xatosi!"));
+});
+</script>
+
+</body>
+</html>
